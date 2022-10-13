@@ -5,10 +5,12 @@ import json
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler
 import pandas as pd
+from flask_cors import CORS
 
 loaded_model = pickle.load(open("modelv1.sav", 'rb'))
 
 app = Flask(__name__)
+CORS(app)
 
 def convert_obj_to_int(fm):    
     object_list_columns = fm.columns
@@ -24,7 +26,9 @@ def hello_world():
 
 @app.route('/', methods=['POST'])
 def hello_world2():
-    posted_file = request.files['document']
+    print("Hehehe", request.files['file'])
+    posted_file = request.files['file']
+    posted_file.save(secure_filename(posted_file.filename))
     if(posted_file.filename[-3:] == 'csv'):
         df_test = pd.read_csv(posted_file)
     elif(posted_file.filename[-3:]  == 'npy'):
